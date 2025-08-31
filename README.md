@@ -10,3 +10,7 @@ To utilize this repo, follow these steps:
 4) Connect your SQL database and run the script
 
 *** I plan to analyze my results and publish them using Power BI ***
+
+REQUIRED LIBRARIES:
+1) berserk - this is the lichess api to access game data
+2) mysql-connector-python - used to connect to MySQL database
