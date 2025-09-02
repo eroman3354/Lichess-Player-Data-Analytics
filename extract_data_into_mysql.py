@@ -21,7 +21,7 @@ def update_mysql_database(pgn_data):
         cnx = mysql.connector.connect(
             host="localhost",   # Or the IP address/domain of your MySQL server
             user="root",    # your username
-            password="drunkenELAN22!",  # your password
+            password="PASSWORD",  # your password
             database="lichess_user_games"   # your database name
         )
         print("Connection established successfully!")
