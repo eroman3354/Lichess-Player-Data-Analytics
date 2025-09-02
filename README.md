@@ -1,17 +1,134 @@
-Player Game Analytics
+# Chess Game Analytics
 
-Whether your goal is to analyze your own games for strengths or weaknesses in your openings, or to analyze an upcoming opponent to develop an optimal strategy,
-the aim of this project is to extract all of a user's game data to decipher performance and winrates based on the opening used at the start of the game.
+All chess players have their own style, preferences, and preparation. This preparation can range from a beginner who knows the first two or three moves, all the way up to a grandmaster who memorizes up to 20 moves. Knowing various openings with as much depth as possible is extremely beneficial, as even minor inaccuracies in the opening can compound into debilitating disadvantages.
 
-To utilize this repo, follow these steps:
-1) Generate an API token with Lichess
-2) Download the python file "extract_data_into_***.py"
-3) Insert the username of the player being analyzed, your API token, and adjust perf_type to the game format of your choosing
-4) Optional: Connect your SQL database and run the script (csv file is available if preferred)
+Given the importance of the start of any chess game, it's my goal to figure out my strongest, and weakest, openings in an effort to take a more insightful approach to my chess studies. And although the goal is to analyze my own games for strengths or weaknesses in my openings, there are a multitude of additional uses to extract, organize, and visualize chess game data by user. One key application is for those at the higher level who participate in tournaments. While preparing for a match, players will be able to extract analytics/habits on their opponent to develop an optimal strategy for their playstyle.
 
-*** I plan to analyze my results and publish them using Power BI ***
+## Step 1: Generate an API token on lichess.org
+This step is pretty self explanatory -- we will need to generate a personal API token to access data.
 
-REQUIRED LIBRARIES:
-1) berserk - this is the lichess api to access game data
-2) mysql-connector-python - used to connect to MySQL database
-3) python-chess - Used to parse PGN data
+## Step 2: Install packages
+We will need three packages:
+1) berserk - To connect to lichess API and extract data
+2) python-chess - To parse PGN data into a usable format
+3) mysql-connector-python - To connect and automatically execute queries on MySQL database
+
+```
+pip install berserk
+pip install python-chess
+pip install mysql-connector-python
+```
+
+## Step 3: Extract, Transform, & Load the data
+First, the provided python file "extract_data_into_sql.py" needs to be downloaded and edited. We simply insert the username of the player whose games are to be analyzed, paste in our API token, and then populate the MySQL database connection information and run the script. A separate file "extract_data_into_csv.py" has also been provided for those who prefer spreadsheets :)
+*Note: There are other fields you can edit to only extract specific games, but it may be better to rely on SQL queries after the table is populated.*
+### Extract
+We call on the lichess API to **extract** the game data filtered to only the specified user (date, game type, etc. also an option). The data is then formatted into a PGN file.
+```
+    data = client.games.export_by_player(user, True, start_date, end_date, max, None, None, perf_type, None
+                                 , None, False, False, True, False, False, True, False, True, None, None, None)
+
+    filename1 = f"{user}_games.pgn"
+
+    with open(filename1, 'w') as f:
+        for game in data:
+            f.write(game)
+            f.write("\n\n")
+        f.close()
+```
+### Transform
+Next, we **transform** the data from a PGN format into a more usable data structure (dictionary).
+```
+def parse_pgn_file(filepath):
+    games_data = []
+    with open(filepath, encoding="utf-8") as pgn_file:
+        while True:
+            game = chess.pgn.read_game(pgn_file)
+            if game is None:
+                break
+            
+            # Extract header information
+            headers = game.headers
+            
+            games_data.append({
+                "headers": headers,
+            })
+    return games_data
+```
+### Load
+Then, we take the parsed data and **load** it into the previously connected MySQL database. It gets a bit bulky, but it's mostly just the SQL table values.
+```
+    if 'cnx' in locals() and cnx.is_connected():
+        cursor = cnx.cursor()
+    
+    if 'cursor' in locals():
+        # Execute queries to populate table here
+        # Create new table "games" in database if not already executed
+        # Create table (adjust columns based on your schema)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS games (
+                event VARCHAR(255),
+                site VARCHAR(255),
+                date VARCHAR(255),
+                white VARCHAR(255),
+                black VARCHAR(255),
+                result VARCHAR(255),
+                gameid VARCHAR(255) NOT NULL PRIMARY KEY,
+                utcdate VARCHAR(255),
+                utctime VARCHAR(255),
+                whiteelo INT,
+                blackelo INT,
+                whiteratingdiff INT,
+                blackratingdiff INT,
+                variant VARCHAR(255),
+                timecontrol VARCHAR(255),
+                eco VARCHAR(255),
+                opening VARCHAR(255),
+                termination VARCHAR(255)
+            );
+        """)
+
+        # Insert data
+        for game_info in pgn_data:
+            headers = game_info["headers"]
+            # Manipulate the "Opening" field to only include broad opening names
+            opening = headers.get("Opening", '')
+            index = opening.find(":")
+            opening = opening[:index] if index != -1 else opening
+            # Get gameid
+            gameid = headers.get("GameId", '')
+            cursor.execute('''
+                INSERT IGNORE INTO games (event, site, date, white, black, result, gameid, utcdate, utctime, 
+                           whiteelo, blackelo, whiteratingdiff, blackratingdiff, variant, timecontrol, eco, opening, termination)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+            ''', (
+                headers.get("Event", ''),
+                headers.get("Site", ''),
+                headers.get("Date", ''),
+                headers.get("White", ''),
+                headers.get("Black", ''),
+                headers.get("Result", ''),
+                gameid,
+                headers.get("UTCDate", ''),
+                headers.get("UTCTime", ''),
+                int(headers.get("WhiteElo", 0)), # Convert to integer
+                int(headers.get("BlackElo", 0)), # Convert to integer
+                int(headers.get("WhiteRatingDiff", 0)),
+                int(headers.get("BlackRatingDiff", 0)),
+                headers.get("Variant", ''),
+                headers.get("TimeControl", ''),
+                headers.get("ECO", ''),
+                opening, # Use the manipulated opening value
+                headers.get("Termination", ''),
+            ))
+
+        cnx.commit()
+        cursor.close()
+        cnx.close()
+        print("Connection closed.")
+```
+
+### Step 4: Analyze & Visualize
+**I plan to analyze my results and publish them using Power BI**
+**Include some useful SQL queries**
+**Summarize results**
