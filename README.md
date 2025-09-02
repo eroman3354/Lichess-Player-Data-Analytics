@@ -21,7 +21,7 @@ pip install mysql-connector-python
 
 ## Step 3: Extract, Transform, & Load the data
 First, the provided python file "extract_data_into_sql.py" needs to be downloaded and edited. We simply insert the username of the player whose games are to be analyzed, paste in our API token, and then populate the MySQL database connection information and run the script. A separate file "extract_data_into_csv.py" has also been provided for those who prefer spreadsheets :)
-*Note: There are other fields you can edit to only extract specific games, but it may be better to rely on SQL queries after the table is populated.*
+*Note: I used the SQLTools extension on VSCode, but there are plenty of ways to set up a MySQL database*
 ### Extract
 We call on the lichess API to **extract** the game data filtered to only the specified user (date, game type, etc. also an option). The data is then formatted into a PGN file.
 ```
