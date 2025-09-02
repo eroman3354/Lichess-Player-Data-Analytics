@@ -1,7 +1,7 @@
 import berserk
 from converter.pgn_data import PGNData
 
-session = berserk.TokenSession("lip_2MyZJjtsZKYrR19jCumw")
+session = berserk.TokenSession("INSERT API TOKEN HERE")
 client = berserk.Client(session=session)
 
 # Provide Lichess username
