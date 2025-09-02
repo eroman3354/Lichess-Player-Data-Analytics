@@ -4,10 +4,7 @@ All chess players have their own style, preferences, and preparation. This prepa
 
 Given the importance of the start of any chess game, it's my goal to figure out my strongest, and weakest, openings in an effort to take a more insightful approach to my chess studies. And although the goal is to analyze my own games for strengths or weaknesses in my openings, there are a multitude of additional uses to extract, organize, and visualize chess game data by user. One key application is for those at the higher level who participate in tournaments. While preparing for a match, players will be able to extract analytics/habits on their opponent to develop an optimal strategy for their playstyle.
 
-## Step 1: Generate an API token on lichess.org
-This step is pretty self explanatory -- we will need to generate a personal API token to access data.
-
-## Step 2: Install packages
+## Step 1: Install packages
 We will need three packages:
 1) berserk - To connect to lichess API and extract data
 2) python-chess - To parse PGN data into a usable format
@@ -19,7 +16,7 @@ pip install python-chess
 pip install mysql-connector-python
 ```
 
-## Step 3: Extract, Transform, & Load the data
+## Step 2: Extract, Transform, & Load the data
 First, the provided python file "extract_data_into_sql.py" needs to be downloaded and edited. We simply insert the username of the player whose games are to be analyzed, paste in our API token, and then populate the MySQL database connection information and run the script. A separate file "extract_data_into_csv.py" has also been provided for those who prefer spreadsheets :)
 *Note: I used the SQLTools extension on VSCode, but there are plenty of ways to set up a MySQL database*
 ### Extract
@@ -128,7 +125,7 @@ Then, we take the parsed data and **load** it into the previously connected MySQ
         print("Connection closed.")
 ```
 
-### Step 4: Analyze & Visualize
+### Step 3: Analyze & Visualize
 **I plan to analyze my results and publish them using Power BI**
 **Include some useful SQL queries**
 **Summarize results**

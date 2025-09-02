@@ -2,9 +2,8 @@ import berserk
 import mysql.connector
 import chess.pgn
 
-# Initialize Lichess API client with your token
-session = berserk.TokenSession("INSERT API TOKEN HERE")
-client = berserk.Client(session=session)
+# Initialize Lichess API client
+client = berserk.Client()
 
 # Provide Lichess username
 user = "eroman5"
@@ -22,8 +21,8 @@ def update_mysql_database(pgn_data):
         cnx = mysql.connector.connect(
             host="localhost",   # Or the IP address/domain of your MySQL server
             user="root",    # your username
-            password="PASSWORD",  # your password
-            database="DATABASE"   # your database name
+            password="drunkenELAN22!",  # your password
+            database="lichess_user_games"   # your database name
         )
         print("Connection established successfully!")
     except mysql.connector.Error as err:
