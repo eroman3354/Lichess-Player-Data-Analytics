@@ -16,7 +16,7 @@ pip install python-chess
 pip install mysql-connector-python
 ```
 
-## Step 2: Extract, Transform, & Load the data
+## Step 2(, 3 and 4): Extract, Transform, & Load the data
 First, the provided python file "extract_data_into_sql.py" needs to be downloaded and edited. We simply insert the username of the player whose games are to be analyzed, paste in our API token, and then populate the MySQL database connection information and run the script. A separate file "extract_data_into_csv.py" has also been provided for those who prefer spreadsheets :)
 *Note: I used the SQLTools extension on VSCode, but there are plenty of ways to set up a MySQL database*
 ### Extract
