@@ -6,7 +6,7 @@ import io
 # Initialize Lichess API client
 client = berserk.Client()
 
-user = "ericrosen" # Lichess username
+user = "eroman5" # Lichess username
 start_date = 1748736000000 # June 1, 2025 (epoch time in milliseconds)
 end_date = None
 perf_type = "Standard"
