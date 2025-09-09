@@ -24,6 +24,7 @@ SELECT
     opening,
     AVG(CASE WHEN white = 'eroman5' AND result = '1-0' THEN 1
         WHEN black = 'eroman5' AND result = '0-1' THEN 1
+        WHEN result = '1/2-1/2' THEN 0.5
         ELSE 0 END) AS win_rate,
     COUNT(opening) AS games_played
 FROM games
