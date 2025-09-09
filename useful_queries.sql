@@ -18,3 +18,16 @@ WHERE ((white = 'eroman5' AND result = '1-0')
     OR (black = 'eroman5' AND result = '0-1'))
     AND opening IS NOT NULL
 GROUP BY opening;
+
+-- Opening win rates for specific user (minimum 5 games played)
+SELECT
+    opening,
+    AVG(CASE WHEN white = 'eroman5' AND result = '1-0' THEN 1
+        WHEN black = 'eroman5' AND result = '0-1' THEN 1
+        ELSE 0 END) AS win_rate,
+    COUNT(opening) AS games_played
+FROM games
+WHERE (white = 'eroman5' OR black = 'eroman5')
+    AND (opening IS NOT NULL AND opening != '?')
+GROUP BY opening
+HAVING COUNT(opening) >= 5;
