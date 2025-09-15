@@ -80,6 +80,8 @@ Then, we take the parsed pgn data and **load** it into the previously connected 
 ```
 
 ### Step 3: Analyze & Visualize
-**I plan to analyze my results and publish them using Power BI**
+[Sheet 1.pdf](https://github.com/user-attachments/files/22348684/Sheet.1.pdf)
+
+**I plan to analyze my results and publish them using Tableau**
 **Include some useful SQL queries**
 **Summarize results**
